@@ -22,19 +22,24 @@ def get_special_paths(dirname):
     special_dir_files = []
     for file in os.listdir(dirname):
         special_file = re.findall(r'__(\w+)__', file)
-        print(special_file)
         if special_file:
             special_dir_files.append(os.path.abspath(file))
     return special_dir_files
 
 
 def copy_to(path_list, dest_dir):
-    # your code here
+    if not os.path.isdir(dest_dir):
+        os.makedirs(dest_dir)
+    for path in path_list:
+        shutil.copy(path, dest_dir)
     return
 
 
 def zip_to(path_list, dest_zip):
-    # your code here
+    for path in path_list:
+        print(f'zip -j {dest_zip} {path}')
+        subprocess.run(["zip", "-j", dest_zip, path])
+
     return
 
 
@@ -58,7 +63,14 @@ def main(args):
 
     if len(sys.argv) < 1:
         parser.print_usage()
-    get_special_paths(ns.from_dir)
+    path_list = get_special_paths(ns.from_dir)
+    if ns.todir:
+        copy_to(path_list, ns.todir)
+    elif ns.tozip:
+        zip_to(path_list, ns.tozip)
+    else:
+        for path in path_list:
+            print(path)
 
 
 if __name__ == "__main__":
