@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # give credits
-__author__ = "Jo Anna Mollman (jodi08)"
+__author__ = "Jo Anna Mollman (jodi08) with help from Amanda, Nikal, and Albina"
 
 import re
 import os
