@@ -7,7 +7,10 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 # give credits
-__author__ = "Jo Anna Mollman (jodi08) with help from Amanda, Nikal, and Albina"
+
+__author__ = "Jo Anna Mollman (jodi08) with help from Amanda,\
+Nikal, and Albina"
+
 
 import re
 import os
@@ -23,11 +26,13 @@ def get_special_paths(dirname):
     for file in os.listdir(dirname):
         special_file = re.findall(r'__(\w+)__', file)
         if special_file:
-            special_dir_files.append(os.path.abspath(file))
+            special_dir_files.append(os.path.abspath(
+                                     os.path.join(dirname, file)))
     return special_dir_files
 
 
 def copy_to(path_list, dest_dir):
+    """Given a dirname, returns a list of all its special files."""
     if not os.path.isdir(dest_dir):
         os.makedirs(dest_dir)
     for path in path_list:
@@ -36,6 +41,7 @@ def copy_to(path_list, dest_dir):
 
 
 def zip_to(path_list, dest_zip):
+    """Given a dirname, returns a list of all its special files."""
     for path in path_list:
         print(f'zip -j {dest_zip} {path}')
         subprocess.run(["zip", "-j", dest_zip, path])
@@ -61,16 +67,17 @@ def main(args):
     # any required args, the general rule is to print a usage message and
     # exit(1).
 
-    if len(sys.argv) < 1:
+    if not ns:
         parser.print_usage()
+        sys.exit(1)
     path_list = get_special_paths(ns.from_dir)
     if ns.todir:
         copy_to(path_list, ns.todir)
-    elif ns.tozip:
+    if ns.tozip:
         zip_to(path_list, ns.tozip)
-    else:
-        for path in path_list:
-            print(path)
+    if not ns.todir and not ns.tozip:
+        # for path in path_list:
+        print(*path_list, sep="\n")
 
 
 if __name__ == "__main__":
